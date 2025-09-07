@@ -52,9 +52,39 @@ class Minesweeper:
             print(f"{idx} |" + " ".join(display_row) + "|")
         print("  +" + "--" * self.size + "+")
 
-    #def reveal_cell(self, x, y):
+    def reveal_cell(self, x, y):
+        if x < 0 or x >= self.size or y < 0 or y >= self.size:
+            print("Некорректные координаты!")
+            return
+        if self.revealed[x][y]:
+            print("Клетка уже открыта.")
+            return
+        if self.flags[x][y]:
+            print("Клетка помечена флажком. Снимите флажок перед открытием.")
+            return
 
-    #def toggle_flag(self, x, y):
+        self.revealed[x][y] = True
+        if self.board[x][y] == 'M':
+            self.game_over = True
+            print("Вы наткнулись на мину! Игра окончена.")
+            self.print_board(reveal=True)
+            return
+        if self.board[x][y] == '0':
+            # Рекурсивное открытие соседних клеток
+            for i in range(max(0, x - 1), min(self.size, x + 2)):
+                for j in range(max(0, y - 1), min(self.size, y + 2)):
+                    if not self.revealed[i][j]:
+                        self.reveal_cell(i, j)
+
+    def toggle_flag(self, x, y):
+        if x < 0 or x >= self.size or y < 0 or y >= self.size:
+            print("Некорректные координаты!")
+            return
+        if self.revealed[x][y]:
+            print("Клетка уже открыта, флажок нельзя поставить.")
+            return
+        self.flags[x][y] = not self.flags[x][y]
+        print(f"Флажок {'установлен' if self.flags[x][y] else 'снят'} на клетке ({x}, {y}).")
 
     def check_win(self):
         for x in range(self.size):
