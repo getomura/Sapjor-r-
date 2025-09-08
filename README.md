@@ -16,3 +16,4 @@
 - Волков.М.Д: ([getomura](https://github.com/getomura))
 - Жалилов.А.А: ([artemzhalil](https://github.com/artemzhalil/))
 ## Техническое задание
+- [Техническое задание](Техническое%20задание.md)
