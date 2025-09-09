@@ -23,7 +23,6 @@ class Minesweeper:
             print(f"{idx} |" + " ".join(display_row) + "|")
         print("  +" + "--" * self.size + "+")
 
-
 if __name__ == "__main__":
     game = Minesweeper(size=9)
     game.print_board()
