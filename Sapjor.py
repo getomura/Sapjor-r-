@@ -19,6 +19,26 @@ class Minesweeper:
                 self.board[x][y] = 'M'
                 mines_placed += 1
 
+        # Заполняем числа вокруг мин
+        for x in range(self.size):
+            for y in range(self.size):
+                if self.board[x][y] != 'M':
+                    count = self.count_mines(x, y)
+                    self.board[x][y] = str(count) if count > 0 else ' '
+
+    def count_mines(self, x, y):
+        """Подсчёт мин вокруг клетки (x, y)"""
+        count = 0
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                if dx == 0 and dy == 0:
+                    continue
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < self.size and 0 <= ny < self.size:
+                    if self.board[nx][ny] == 'M':
+                        count += 1
+        return count
+
     def print_board(self, reveal=False):
         # Вывод игрового поля
         print("   " + " ".join([str(i) for i in range(self.size)]))
@@ -39,4 +59,4 @@ class Minesweeper:
 
 if __name__ == "__main__":
     game = Minesweeper(size=9, mines=10)
-    game.print_board(reveal=True)  # показываем поле с минами
+    game.print_board(reveal=True)  # показываем поле с минами и числами
