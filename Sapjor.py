@@ -57,31 +57,6 @@ class Minesweeper:
             print(f"{idx} |" + " ".join(display_row) + "|")
         print("  +" + "--" * self.size + "+")
 
-    def reveal_cell(self, x, y):
-        """Открытие клетки и рекурсивное открытие пустых соседей"""
-        if not (0 <= x < self.size and 0 <= y < self.size):
-            return  # Выход за границы
-        if self.revealed[x][y] or self.flags[x][y]:
-            return  # Уже открыта или помечена флажком
-
-        self.revealed[x][y] = True
-
-        if self.board[x][y] == 'M':
-            print("Бум! Вы попали на мину!")
-            return
-
-        if self.board[x][y] == ' ':
-            # Рекурсивно открываем соседние клетки
-            for dx in [-1, 0, 1]:
-                for dy in [-1, 0, 1]:
-                    if dx != 0 or dy != 0:
-                        self.reveal_cell(x + dx, y + dy)
-
 if __name__ == "__main__":
     game = Minesweeper(size=9, mines=10)
     game.print_board(reveal=True)  # показываем поле с минами и числами
-
-    # Пример: откроем клетку (0, 0)
-    print("\nОткрываем (0, 0):")
-    game.reveal_cell(0, 0)
-    game.print_board()
