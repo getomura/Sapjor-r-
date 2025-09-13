@@ -69,7 +69,7 @@ class Minesweeper:
 
         if self.board[x][y] == 'M':
             self.game_over = True
-            print("Бум! Вы попали на мину!")
+            print("Бум! Вы подорвались на мине! Игра окончена.")
             self.print_board(reveal=True)
             return
 
