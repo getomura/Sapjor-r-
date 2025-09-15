@@ -1,5 +1,3 @@
-import random
-
 class Minesweeper:
     def __init__(self, size=9, mines=10):
         self.size = size  # Размер поля (9x9)
@@ -84,7 +82,7 @@ class Minesweeper:
         # Проверка победы после каждого хода
         if self.check_win():
             self.game_over = True
-            print("Поздравляем! Вы выиграли!")
+            print("🏆 Поздравляем! Вы выиграли!")
             self.print_board(reveal=True)
 
     def toggle_flag(self, x, y):
@@ -108,7 +106,54 @@ class Minesweeper:
         return True
 
 
+# Проверка основных функций игры
+def test_game():
+    print("=== ТЕСТОВЫЙ РЕЖИМ ===")
+    game = Minesweeper(size=5, mines=3)
+    game.print_board(reveal=True)
+
+    # 1. Проверка правильности количества мин
+    mine_count = sum(row.count('M') for row in game.board)
+    print(f"Мин на поле: {mine_count} (ожидалось {game.mines})")
+
+    # 2. Проверка открытия клетки без мины
+    print("\nОткрываем (0,0):")
+    game.reveal_cell(0, 0)
+    game.print_board()
+
+    # 3. Проверка рекурсивного открытия
+    print("\nТест рекурсивного открытия пустых клеток...")
+    for x in range(game.size):
+        for y in range(game.size):
+            if game.board[x][y] == ' ':
+                game.reveal_cell(x, y)
+                game.print_board()
+                break
+        else:
+            continue
+        break
+
+    # 4. Проверка флага
+    print("\nСтавим флажок на (1,1):")
+    game.toggle_flag(1, 1)
+    game.print_board()
+
+    # 5. Проверка проигрыша
+    print("\nПринудительно открываем мину...")
+    for x in range(game.size):
+        for y in range(game.size):
+            if game.board[x][y] == 'M':
+                game.reveal_cell(x, y)
+                break
+        if game.game_over:
+            break
+
+
 if __name__ == "__main__":
+    # Запуск теста перед игрой
+    test_game()
+
+    print("\n=== НАЧАЛО ИГРЫ ===")
     game = Minesweeper(size=9, mines=10)
     game.print_board()
 
