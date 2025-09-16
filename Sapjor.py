@@ -1,4 +1,5 @@
 import random
+import json
 
 class Minesweeper:
     def __init__(self, size=9, mines=10):
@@ -107,70 +108,65 @@ class Minesweeper:
                     return False
         return True
 
+    # Сохранение игры
+    def save_game(self, filename="save.json"):
+        state = {
+            "size": self.size,
+            "mines": self.mines,
+            "board": self.board,
+            "revealed": self.revealed,
+            "flags": self.flags,
+            "game_over": self.game_over,
+        }
+        with open(filename, "w") as f:
+            json.dump(state, f)
+        print(f"Игра сохранена в {filename}")
 
-# Проверка основных функций игры
-def test_game():
-    print("=== ТЕСТОВЫЙ РЕЖИМ ===")
-    game = Minesweeper(size=5, mines=3)
-    game.print_board(reveal=True)
-
-    # 1. Проверка правильности количества мин
-    mine_count = sum(row.count('M') for row in game.board)
-    print(f"Мин на поле: {mine_count} (ожидалось {game.mines})")
-
-    # 2. Проверка открытия клетки без мины
-    print("\nОткрываем (0,0):")
-    game.reveal_cell(0, 0)
-    game.print_board()
-
-    # 3. Проверка рекурсивного открытия
-    print("\nТест рекурсивного открытия пустых клеток...")
-    for x in range(game.size):
-        for y in range(game.size):
-            if game.board[x][y] == ' ':
-                game.reveal_cell(x, y)
-                game.print_board()
-                break
-        else:
-            continue
-        break
-
-    # 4. Проверка флага
-    print("\nСтавим флажок на (1,1):")
-    game.toggle_flag(1, 1)
-    game.print_board()
-
-    # 5. Проверка проигрыша
-    print("\nПринудительно открываем мину...")
-    for x in range(game.size):
-        for y in range(game.size):
-            if game.board[x][y] == 'M':
-                game.reveal_cell(x, y)
-                break
-        if game.game_over:
-            break
+    # Загрузка игры
+    def load_game(self, filename="save.json"):
+        try:
+            with open(filename, "r") as f:
+                state = json.load(f)
+            self.size = state["size"]
+            self.mines = state["mines"]
+            self.board = state["board"]
+            self.revealed = state["revealed"]
+            self.flags = state["flags"]
+            self.game_over = state["game_over"]
+            print(f"Игра загружена из {filename}")
+        except FileNotFoundError:
+            print("Сохранение не найдено.")
 
 
 if __name__ == "__main__":
-    # Запуск теста перед игрой
-    test_game()
+    print("=== САПЁР ===")
+    choice = input("Загрузить сохранённую игру? (y/n): ").lower()
+    if choice == "y":
+        game = Minesweeper()
+        game.load_game()
+    else:
+        game = Minesweeper(size=9, mines=10)
 
-    print("\n=== НАЧАЛО ИГРЫ ===")
-    game = Minesweeper(size=9, mines=10)
     game.print_board()
 
     while not game.game_over:
         try:
-            action = input("Ход (r x y - открыть, f x y - флаг): ").split()
-            if len(action) != 3:
-                print("Формат: r x y или f x y")
+            action = input("Ход (r x y - открыть, f x y - флаг, s - сохранить, q - выйти): ").split()
+            if not action:
                 continue
-            cmd, x, y = action[0], int(action[1]), int(action[2])
+            cmd = action[0]
 
-            if cmd == 'r':
+            if cmd == 'r' and len(action) == 3:
+                x, y = int(action[1]), int(action[2])
                 game.reveal_cell(x, y)
-            elif cmd == 'f':
+            elif cmd == 'f' and len(action) == 3:
+                x, y = int(action[1]), int(action[2])
                 game.toggle_flag(x, y)
+            elif cmd == 's':
+                game.save_game()
+            elif cmd == 'q':
+                print("Выход из игры.")
+                break
             else:
                 print("Неизвестная команда.")
 
