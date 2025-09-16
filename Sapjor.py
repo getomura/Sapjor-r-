@@ -1,3 +1,5 @@
+import random
+
 class Minesweeper:
     def __init__(self, size=9, mines=10):
         self.size = size  # Размер поля (9x9)
